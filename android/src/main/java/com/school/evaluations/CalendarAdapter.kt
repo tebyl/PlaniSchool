@@ -29,6 +29,7 @@ class CalendarAdapter(
         val dotStudy = view.findViewById<View>(R.id.dotStudy)
         val pillSubject = view.findViewById<TextView>(R.id.pillSubject)
         val moreText = view.findViewById<TextView>(R.id.moreText)
+        val studyCountText = view.findViewById<TextView>(R.id.studyCountText)
 
         val day = days[position]
 
@@ -36,6 +37,7 @@ class CalendarAdapter(
         dotStudy.visibility = View.GONE
         pillSubject.visibility = View.GONE
         moreText.visibility = View.GONE
+        studyCountText.visibility = View.GONE
         dayText.setBackgroundResource(0)
 
         if (!day.isCurrentMonth || day.day == 0) {
@@ -47,8 +49,8 @@ class CalendarAdapter(
 
         val today = Calendar.getInstance()
         val isToday = today.get(Calendar.MONTH) == currentMonth.get(Calendar.MONTH) &&
-                today.get(Calendar.YEAR) == currentMonth.get(Calendar.YEAR) &&
-                today.get(Calendar.DAY_OF_MONTH) == day.day
+            today.get(Calendar.YEAR) == currentMonth.get(Calendar.YEAR) &&
+            today.get(Calendar.DAY_OF_MONTH) == day.day
 
         if (isToday) {
             dayText.setBackgroundResource(R.drawable.bg_today)
@@ -68,8 +70,13 @@ class CalendarAdapter(
 
         if (dayEvaluations.isNotEmpty()) {
             dotEval.visibility = View.VISIBLE
-            pillSubject.text = dayEvaluations.first().subject
+            pillSubject.text = if (dayEvaluations.size == 1) {
+                dayEvaluations.first().subject
+            } else {
+                "${dayEvaluations.size} eval."
+            }
             pillSubject.visibility = View.VISIBLE
+
             if (dayEvaluations.size > 1) {
                 moreText.text = "+${dayEvaluations.size - 1} más"
                 moreText.visibility = View.VISIBLE
@@ -78,6 +85,10 @@ class CalendarAdapter(
 
         if (dayStudyItems.isNotEmpty()) {
             dotStudy.visibility = View.VISIBLE
+            if (dayStudyItems.size > 1) {
+                studyCountText.text = "${dayStudyItems.size} est."
+                studyCountText.visibility = View.VISIBLE
+            }
         }
 
         return view

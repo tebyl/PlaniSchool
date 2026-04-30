@@ -1,8 +1,6 @@
 package com.school.evaluations
 
 import android.app.DatePickerDialog
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +13,7 @@ import android.widget.TextView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import java.util.*
+import java.util.Calendar
 
 class NewEvaluationBottomSheet : BottomSheetDialogFragment() {
 
@@ -23,8 +21,8 @@ class NewEvaluationBottomSheet : BottomSheetDialogFragment() {
     var editingEvaluation: Evaluation? = null
 
     private lateinit var spinnerSubject: Spinner
-    private lateinit var editTopic: EditText
-    private lateinit var tvDate: TextView
+    private lateinit var editTextTopic: EditText
+    private lateinit var editTextDate: TextView
 
     private var selectedDate: Calendar = Calendar.getInstance()
 
@@ -32,16 +30,17 @@ class NewEvaluationBottomSheet : BottomSheetDialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.dialog_new_evaluation, container, false)
+    ): View = inflater.inflate(R.layout.dialog_new_evaluation, container, false)
 
     override fun onStart() {
         super.onStart()
         val d = dialog as? BottomSheetDialog ?: return
         val bottomSheet = d.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
-        bottomSheet?.background = ColorDrawable(Color.TRANSPARENT)
-        d.behavior.apply {
-            state = BottomSheetBehavior.STATE_EXPANDED
-            skipCollapsed = true
+        bottomSheet?.let {
+            val behavior = BottomSheetBehavior.from(it)
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            behavior.skipCollapsed = true
+            it.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
         }
     }
 
@@ -49,15 +48,16 @@ class NewEvaluationBottomSheet : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         spinnerSubject = view.findViewById(R.id.spinnerSubject)
-        editTopic = view.findViewById(R.id.editTopic)
-        tvDate = view.findViewById(R.id.tvDate)
+        editTextTopic = view.findViewById(R.id.editTextTopic)
+        editTextDate = view.findViewById(R.id.editTextDate)
 
         setupSpinner()
         setupDatePicker()
         populateFields()
 
         view.findViewById<Button>(R.id.btnCancel).setOnClickListener { dismiss() }
-        view.findViewById<Button>(R.id.btnAdd).setOnClickListener { saveEvaluation() }
+        val btnAdd = view.findViewById<Button>(R.id.btnAdd)
+        btnAdd.setOnClickListener { saveEvaluation() }
     }
 
     private fun setupSpinner() {
@@ -72,12 +72,12 @@ class NewEvaluationBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun setupDatePicker() {
-        tvDate.setOnClickListener {
+        editTextDate.setOnClickListener {
             DatePickerDialog(
                 requireContext(),
                 { _, year, month, day ->
                     selectedDate.set(year, month, day)
-                    tvDate.text = formatDateDisplay(selectedDate)
+                    editTextDate.text = formatDateDisplay(selectedDate)
                 },
                 selectedDate.get(Calendar.YEAR),
                 selectedDate.get(Calendar.MONTH),
@@ -89,9 +89,10 @@ class NewEvaluationBottomSheet : BottomSheetDialogFragment() {
     private fun populateFields() {
         val eval = editingEvaluation
         if (eval != null) {
-            val subjectIndex = Subject.DEFAULT_SUBJECTS.indexOfFirst { it.name == eval.subject }
+            val normalized = Subject.normalizeName(eval.subject)
+            val subjectIndex = Subject.DEFAULT_SUBJECTS.indexOfFirst { it.name == normalized }
             if (subjectIndex >= 0) spinnerSubject.setSelection(subjectIndex)
-            editTopic.setText(eval.topic)
+            editTextTopic.setText(eval.topic)
 
             val parts = eval.date.split("-")
             if (parts.size == 3) {
@@ -102,7 +103,7 @@ class NewEvaluationBottomSheet : BottomSheetDialogFragment() {
             }
         }
 
-        tvDate.text = formatDateDisplay(selectedDate)
+        editTextDate.text = formatDateDisplay(selectedDate)
     }
 
     private fun formatDateDisplay(cal: Calendar): String {
@@ -115,9 +116,9 @@ class NewEvaluationBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun saveEvaluation() {
-        val topic = editTopic.text.toString().trim()
+        val topic = editTextTopic.text.toString().trim()
         if (topic.isEmpty()) {
-            editTopic.error = "El tema no puede estar vacío"
+            editTextTopic.error = "El tema no puede estar vacío"
             return
         }
 

@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.GridView
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -102,7 +104,8 @@ class CalendarFragment : Fragment() {
             evalByDate.getOrPut(eval.date) { mutableListOf() }.add(eval)
 
             val evalDate = StudyPlanGenerator.parseDateKeyOrNull(eval.date) ?: continue
-            val studyDays = studyConfig[eval.subject] ?: 3
+            val subjectName = Subject.normalizeName(eval.subject)
+            val studyDays = studyConfig[subjectName] ?: DataManager.getDefaultStudyDaysForSubject(subjectName)
             val studyDates = StudyPlanGenerator.generateStudyDates(evalDate, studyDays)
 
             for (dateKey in studyDates) {
@@ -133,32 +136,68 @@ class CalendarFragment : Fragment() {
     private fun showDayDetailsDialog(dayUi: CalendarDayUi) {
         if (dayUi.evaluations.isEmpty() && dayUi.studyItems.isEmpty()) return
 
-        val dateTitle = formatLongDate(dayUi.dateKey)
-        val body = buildString {
-            append("Evaluaciones\n")
-            if (dayUi.evaluations.isEmpty()) {
-                append("- Sin evaluaciones\n")
-            } else {
-                for (eval in dayUi.evaluations) {
-                    append("- ${eval.subject}: ${eval.topic.ifBlank { "Sin tema" }}\n")
-                }
-            }
-            append("\nEstudio sugerido\n")
-            if (dayUi.studyItems.isEmpty()) {
-                append("- Sin estudio sugerido")
-            } else {
-                for (item in dayUi.studyItems) {
-                    val topic = if (item.topic.isBlank()) "Sin tema" else item.topic
-                    append("- ${item.subjectName}: $topic\n")
-                }
-            }
-        }.trim()
+        val dialog = BottomSheetDialog(requireContext())
+        val content = layoutInflater.inflate(R.layout.dialog_day_detail, null, false)
+        dialog.setContentView(content)
 
-        AlertDialog.Builder(requireContext())
-            .setTitle(dateTitle)
-            .setMessage(body)
-            .setPositiveButton("Cerrar", null)
-            .show()
+        content.findViewById<TextView>(R.id.tvDayTitle).text = "📅 ${formatLongDate(dayUi.dateKey)}"
+
+        val containerEvaluations = content.findViewById<LinearLayout>(R.id.containerEvaluations)
+        val containerStudy = content.findViewById<LinearLayout>(R.id.containerStudy)
+        val tvEmptyEvaluations = content.findViewById<TextView>(R.id.tvEmptyEvaluations)
+        val tvEmptyStudy = content.findViewById<TextView>(R.id.tvEmptyStudy)
+
+        if (dayUi.evaluations.isEmpty()) {
+            tvEmptyEvaluations.visibility = View.VISIBLE
+        } else {
+            tvEmptyEvaluations.visibility = View.GONE
+            dayUi.evaluations.forEach { eval ->
+                containerEvaluations.addView(
+                    createDetailEntry(
+                        emoji = eval.emoji,
+                        title = eval.subject,
+                        subtitle = eval.topic.ifBlank { "Sin tema" },
+                        chip = "Evaluación"
+                    )
+                )
+            }
+        }
+
+        if (dayUi.studyItems.isEmpty()) {
+            tvEmptyStudy.visibility = View.VISIBLE
+        } else {
+            tvEmptyStudy.visibility = View.GONE
+            dayUi.studyItems.forEach { item ->
+                containerStudy.addView(
+                    createDetailEntry(
+                        emoji = Subject.findByName(item.subjectName)?.emoji ?: "📘",
+                        title = item.subjectName,
+                        subtitle = if (item.topic.isBlank()) "Revisión general" else item.topic,
+                        chip = "Estudiar hoy"
+                    )
+                )
+            }
+        }
+
+        content.findViewById<Button>(R.id.btnCloseDayDetail).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private fun createDetailEntry(
+        emoji: String,
+        title: String,
+        subtitle: String,
+        chip: String
+    ): View {
+        val entryView = layoutInflater.inflate(R.layout.item_day_detail_entry, null, false)
+        entryView.findViewById<TextView>(R.id.tvEntryEmoji).text = emoji
+        entryView.findViewById<TextView>(R.id.tvEntryTitle).text = title
+        entryView.findViewById<TextView>(R.id.tvEntrySubtitle).text = subtitle
+        entryView.findViewById<TextView>(R.id.tvEntryChip).text = chip
+        return entryView
     }
 
     private fun formatLongDate(dateKey: String): String {

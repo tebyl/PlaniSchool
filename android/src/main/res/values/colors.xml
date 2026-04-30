@@ -34,6 +34,8 @@
     <color name="text_secondary">#6B7280</color>
     <color name="dot_evaluation">#7C3AED</color>
     <color name="dot_study">#F9A8D4</color>
+    <color name="ic_launcher_background">#EDE9FE</color>
+    <color name="icon_background">#6C4CF1</color>
 
     <!-- Legacy (kept for compatibility) -->
     <color name="purple_500">#A855F7</color>

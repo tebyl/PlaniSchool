@@ -1,7 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
+        android:icon="@mipmap/ic_launcher"
         android:label="PlaniSchool"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
         <activity
             android:name=".OnboardingActivity"

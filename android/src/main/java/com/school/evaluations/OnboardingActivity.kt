@@ -18,24 +18,19 @@ class OnboardingActivity : AppCompatActivity() {
 
     private val pages = listOf(
         OnboardingPage(
-            title = "📚 Bienvenido a PlaniSchool",
-            description = "Organiza tus pruebas y tareas de forma fácil y divertida 🎉",
-            visual = "🧒📅"
+            imageResId = R.drawable.onboarding_1_calendario,
+            title = "Organiza tus evaluaciones",
+            description = "Visualiza todas tus pruebas en un calendario claro y ordenado."
         ),
         OnboardingPage(
-            title = "🧠 Planifica sin estrés",
-            description = "La app te dice cuándo empezar a estudiar para cada evaluación",
-            visual = "🗓️✨"
+            imageResId = R.drawable.onboarding_2_planifica,
+            title = "Planifica tu estudio",
+            description = "La aplicación te ayuda a saber cuándo empezar a estudiar para cada evaluación."
         ),
         OnboardingPage(
-            title = "🎯 Define tus prioridades",
-            description = "Elige cuántos días necesitas estudiar cada materia",
-            visual = "📚🎚️"
-        ),
-        OnboardingPage(
-            title = "🚀 ¡Todo listo!",
-            description = "Comienza a organizar tus evaluaciones como un pro 💪",
-            visual = "✅🌟"
+            imageResId = R.drawable.onboarding_3_prioridades,
+            title = "Define tus prioridades",
+            description = "Ajusta cuántos días necesitas para cada materia y crea tu propio ritmo de estudio."
         )
     )
 
@@ -61,7 +56,6 @@ class OnboardingActivity : AppCompatActivity() {
         })
 
         btnSkip.setOnClickListener { finishOnboarding() }
-
         btnNext.setOnClickListener {
             val next = viewPager.currentItem + 1
             if (next < pages.size) {
@@ -95,7 +89,7 @@ class OnboardingActivity : AppCompatActivity() {
 
     private fun updateButtons(position: Int) {
         val isLast = position == pages.lastIndex
-        btnNext.text = if (isLast) "Empezar" else "Siguiente"
+        btnNext.text = if (isLast) "Empezar" else "Continuar"
     }
 
     private fun finishOnboarding() {

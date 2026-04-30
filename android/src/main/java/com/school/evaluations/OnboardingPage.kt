@@ -1,7 +1,7 @@
 package com.school.evaluations
 
 data class OnboardingPage(
+    val imageResId: Int,
     val title: String,
-    val description: String,
-    val visual: String
+    val description: String
 )

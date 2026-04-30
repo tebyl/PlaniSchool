@@ -83,7 +83,7 @@ class MainActivity : AppCompatActivity() {
         (vpAdapter.getFragment(0) as? CalendarFragment)?.refreshData()
     }
 
-    private fun refreshAllFragments() {
+    fun refreshAllFragments() {
         (vpAdapter.getFragment(0) as? CalendarFragment)?.refreshData()
         (vpAdapter.getFragment(1) as? PriorityFragment)?.refreshData()
         (vpAdapter.getFragment(2) as? SubjectsFragment)?.refreshData()

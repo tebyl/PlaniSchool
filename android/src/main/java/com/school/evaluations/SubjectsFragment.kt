@@ -70,7 +70,7 @@ class SubjectsFragment : Fragment() {
             onComplete = { eval ->
                 if (isAdded) {
                     DataManager.updateEvaluation(requireContext(), eval.copy(completed = !eval.completed))
-                    loadData()
+                    (activity as? MainActivity)?.refreshAllFragments() ?: loadData()
                 }
             },
             onEdit = { eval ->
@@ -79,7 +79,7 @@ class SubjectsFragment : Fragment() {
             onDelete = { eval ->
                 if (isAdded) {
                     DataManager.deleteEvaluation(requireContext(), eval.id)
-                    loadData()
+                    (activity as? MainActivity)?.refreshAllFragments() ?: loadData()
                 }
             }
         )
