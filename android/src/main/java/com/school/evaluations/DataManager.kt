@@ -1,8 +1,8 @@
 package com.school.evaluations
 
 import android.content.Context
-import android.content.SharedPreferences
 import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 
 object DataManager {
@@ -12,11 +12,13 @@ object DataManager {
     fun getEvaluations(context: Context): MutableList<Evaluation> {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val json = prefs.getString(KEY_EVALUATIONS, null)
-        
-        return if (json != null) {
+
+        if (json.isNullOrBlank()) return mutableListOf()
+
+        return try {
             val type = object : TypeToken<MutableList<Evaluation>>() {}.type
-            Gson().fromJson(json, type)
-        } else {
+            Gson().fromJson<MutableList<Evaluation>>(json, type) ?: mutableListOf()
+        } catch (_: JsonSyntaxException) {
             mutableListOf()
         }
     }

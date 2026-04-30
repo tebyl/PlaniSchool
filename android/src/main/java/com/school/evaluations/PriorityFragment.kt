@@ -31,7 +31,7 @@ class PriorityFragment : Fragment() {
         recyclerView = view.findViewById(R.id.recyclerView)
         
         val sorted = evaluations.sortedBy { it.getDaysUntil() }
-        recyclerView.adapter = PriorityAdapter(sorted) { evaluation ->
+        recyclerView.adapter = PriorityAdapter(sorted) { _ ->
             // Handle click
         }
     }

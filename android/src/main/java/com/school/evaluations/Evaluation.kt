@@ -11,29 +11,47 @@ data class Evaluation(
     val color: String,
     val emoji: String
 ) {
+    private fun parseDateOrNull(): Calendar? {
+        val parts = date.split("-")
+        if (parts.size != 3) return null
+
+        val year = parts[0].toIntOrNull() ?: return null
+        val month = parts[1].toIntOrNull() ?: return null
+        val day = parts[2].toIntOrNull() ?: return null
+
+        if (month !in 1..12 || day !in 1..31) return null
+
+        return Calendar.getInstance().apply {
+            isLenient = false
+            set(Calendar.YEAR, year)
+            set(Calendar.MONTH, month - 1)
+            set(Calendar.DAY_OF_MONTH, day)
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+            try {
+                timeInMillis
+            } catch (_: IllegalArgumentException) {
+                return null
+            }
+        }
+    }
+
     fun getDaysUntil(): Int {
         val today = Calendar.getInstance()
         today.set(Calendar.HOUR_OF_DAY, 0)
         today.set(Calendar.MINUTE, 0)
         today.set(Calendar.SECOND, 0)
         today.set(Calendar.MILLISECOND, 0)
-        
-        val evalDate = Calendar.getInstance()
-        val parts = date.split("-")
-        evalDate.set(parts[0].toInt(), parts[1].toInt() - 1, parts[2].toInt())
-        evalDate.set(Calendar.HOUR_OF_DAY, 0)
-        evalDate.set(Calendar.MINUTE, 0)
-        evalDate.set(Calendar.SECOND, 0)
-        evalDate.set(Calendar.MILLISECOND, 0)
-        
+
+        val evalDate = parseDateOrNull() ?: return Int.MAX_VALUE
         val diff = evalDate.timeInMillis - today.timeInMillis
-        return (diff / (1000 * 60 * 60 * 24)).toInt().let { if (it >= 0) it else -1 }
+        return (diff / (1000 * 60 * 60 * 24)).toInt()
     }
-    
+
     fun getStudyStartDate(): Calendar {
-        val evalDate = Calendar.getInstance()
-        val parts = date.split("-")
-        evalDate.set(parts[0].toInt(), parts[1].toInt() - 1, parts[2].toInt())
+        val evalDate = parseDateOrNull() ?: Calendar.getInstance()
         evalDate.add(Calendar.DAY_OF_YEAR, -studyDaysBefore)
         return evalDate
     }
