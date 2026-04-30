@@ -1,5 +1,6 @@
 package com.school.evaluations
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
@@ -17,6 +18,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val onboardingDone = getSharedPreferences(OnboardingActivity.PREFS_NAME, MODE_PRIVATE)
+            .getBoolean(OnboardingActivity.KEY_ONBOARDING_COMPLETED, false)
+        if (!onboardingDone) {
+            startActivity(Intent(this, OnboardingActivity::class.java))
+            finish()
+            return
+        }
+
         setContentView(R.layout.activity_main)
 
         window.statusBarColor = ContextCompat.getColor(this, R.color.grad_purple)
@@ -67,6 +77,10 @@ class MainActivity : AppCompatActivity() {
         sheet.editingEvaluation = editEval
         sheet.onSaved = { refreshAllFragments() }
         sheet.show(supportFragmentManager, "new_eval")
+    }
+
+    fun refreshCalendar() {
+        (vpAdapter.getFragment(0) as? CalendarFragment)?.refreshData()
     }
 
     private fun refreshAllFragments() {

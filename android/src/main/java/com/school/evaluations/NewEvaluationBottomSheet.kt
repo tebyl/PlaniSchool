@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
-import android.widget.SeekBar
 import android.widget.Spinner
 import android.widget.TextView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -26,9 +25,6 @@ class NewEvaluationBottomSheet : BottomSheetDialogFragment() {
     private lateinit var spinnerSubject: Spinner
     private lateinit var editTopic: EditText
     private lateinit var tvDate: TextView
-    private lateinit var seekBarDays: SeekBar
-    private lateinit var tvDaysBadge: TextView
-    private lateinit var tvStudyInfo: TextView
 
     private var selectedDate: Calendar = Calendar.getInstance()
 
@@ -36,9 +32,7 @@ class NewEvaluationBottomSheet : BottomSheetDialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.dialog_new_evaluation, container, false)
-    }
+    ): View? = inflater.inflate(R.layout.dialog_new_evaluation, container, false)
 
     override fun onStart() {
         super.onStart()
@@ -57,13 +51,9 @@ class NewEvaluationBottomSheet : BottomSheetDialogFragment() {
         spinnerSubject = view.findViewById(R.id.spinnerSubject)
         editTopic = view.findViewById(R.id.editTopic)
         tvDate = view.findViewById(R.id.tvDate)
-        seekBarDays = view.findViewById(R.id.seekBarDays)
-        tvDaysBadge = view.findViewById(R.id.tvDaysBadge)
-        tvStudyInfo = view.findViewById(R.id.tvStudyInfo)
 
         setupSpinner()
         setupDatePicker()
-        setupSeekBar()
         populateFields()
 
         view.findViewById<Button>(R.id.btnCancel).setOnClickListener { dismiss() }
@@ -88,27 +78,12 @@ class NewEvaluationBottomSheet : BottomSheetDialogFragment() {
                 { _, year, month, day ->
                     selectedDate.set(year, month, day)
                     tvDate.text = formatDateDisplay(selectedDate)
-                    updateStudyInfo()
                 },
                 selectedDate.get(Calendar.YEAR),
                 selectedDate.get(Calendar.MONTH),
                 selectedDate.get(Calendar.DAY_OF_MONTH)
             ).show()
         }
-    }
-
-    private fun setupSeekBar() {
-        seekBarDays.max = 14
-        seekBarDays.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                val days = maxOf(1, progress)
-                tvDaysBadge.text = "${days}d"
-                updateStudyInfo()
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar) {}
-        })
     }
 
     private fun populateFields() {
@@ -122,47 +97,19 @@ class NewEvaluationBottomSheet : BottomSheetDialogFragment() {
             if (parts.size == 3) {
                 try {
                     selectedDate.set(parts[0].toInt(), parts[1].toInt() - 1, parts[2].toInt())
-                } catch (_: Exception) { }
+                } catch (_: Exception) {
+                }
             }
-
-            seekBarDays.progress = eval.studyDaysBefore
-            tvDaysBadge.text = "${eval.studyDaysBefore}d"
-        } else {
-            seekBarDays.progress = 5
-            tvDaysBadge.text = "5d"
         }
 
         tvDate.text = formatDateDisplay(selectedDate)
-        updateStudyInfo()
-    }
-
-    private fun updateStudyInfo() {
-        val days = maxOf(1, seekBarDays.progress)
-        val studyStart = selectedDate.clone() as Calendar
-        studyStart.add(Calendar.DAY_OF_YEAR, -days)
-
-        val dayNames = arrayOf(
-            "domingo", "lunes", "martes", "miércoles",
-            "jueves", "viernes", "sábado"
-        )
-        val monthNames = arrayOf(
-            "enero", "febrero", "marzo", "abril", "mayo", "junio",
-            "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
-        )
-
-        val dayName = dayNames[studyStart.get(Calendar.DAY_OF_WEEK) - 1]
-        val dayNum = studyStart.get(Calendar.DAY_OF_MONTH)
-        val monthName = monthNames[studyStart.get(Calendar.MONTH)]
-        val year = studyStart.get(Calendar.YEAR)
-
-        tvStudyInfo.text = "💡 Empezarías a estudiar el $dayName, $dayNum de $monthName de $year"
     }
 
     private fun formatDateDisplay(cal: Calendar): String {
         return String.format(
             "%02d / %02d / %d",
-            cal.get(Calendar.MONTH) + 1,
             cal.get(Calendar.DAY_OF_MONTH),
+            cal.get(Calendar.MONTH) + 1,
             cal.get(Calendar.YEAR)
         )
     }
@@ -184,13 +131,14 @@ class NewEvaluationBottomSheet : BottomSheetDialogFragment() {
             selectedDate.get(Calendar.DAY_OF_MONTH)
         )
 
-        val studyDays = maxOf(1, seekBarDays.progress)
+        val studyDays = DataManager.getStudyDaysForSubject(requireContext(), subject.name)
 
         val evaluation = editingEvaluation?.copy(
             subject = subject.name,
             topic = topic,
             date = dateStr,
             studyDaysBefore = studyDays,
+            color = subject.color,
             emoji = subject.emoji
         ) ?: Evaluation(
             subject = subject.name,

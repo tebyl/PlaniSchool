@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="1dp">
+
+    <LinearLayout
+        android:id="@+id/rootLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="12dp">
+
+        <ImageButton
+            android:id="@+id/btnCheck"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="10dp"
+            android:background="@null"
+            android:src="@drawable/ic_check" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/emojiText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/subjectText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/tvTodayBadge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_urgent_badge"
+                    android:paddingLeft="8dp"
+                    android:paddingTop="2dp"
+                    android:paddingRight="8dp"
+                    android:paddingBottom="2dp"
+                    android:text="🔥 ¡Hoy!"
+                    android:textColor="@color/red_500"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/topicText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/bg_topic_pill"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:paddingLeft="8dp"
+                android:paddingTop="3dp"
+                android:paddingRight="8dp"
+                android:paddingBottom="3dp"
+                android:textColor="#6D28D9"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/dateText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btnEdit"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="4dp"
+                android:background="@drawable/bg_edit_button"
+                android:src="@drawable/ic_edit" />
+
+            <ImageButton
+                android:id="@+id/btnDelete"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/bg_delete_button"
+                android:src="@drawable/ic_delete" />
+        </LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

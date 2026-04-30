@@ -7,16 +7,18 @@ data class Subject(
 ) {
     companion object {
         val DEFAULT_SUBJECTS = listOf(
-            Subject("Matemáticas", "🔢", "from-blue-400 to-blue-600"),
-            Subject("Español", "📝", "from-pink-400 to-pink-600"),
-            Subject("Ciencias", "🔬", "from-green-400 to-green-600"),
-            Subject("Historia", "📜", "from-amber-400 to-amber-600"),
-            Subject("Inglés", "🌍", "from-purple-400 to-purple-600"),
-            Subject("Arte", "🎨", "from-red-400 to-red-600"),
-            Subject("Educación Física", "⚽", "from-teal-400 to-teal-600"),
-            Subject("Música", "🎵", "from-indigo-400 to-indigo-600"),
-            Subject("Tecnología", "💻", "from-cyan-400 to-cyan-600"),
-            Subject("Otra", "📚", "from-gray-400 to-gray-600")
+            Subject("Matemáticas", "📐", "#3B82F6"),
+            Subject("Español", "📝", "#EC4899"),
+            Subject("Ciencias", "🔬", "#22C55E"),
+            Subject("Historia", "📜", "#F59E0B"),
+            Subject("Inglés", "🌍", "#8B5CF6"),
+            Subject("Arte", "🎨", "#EF4444"),
+            Subject("Educación Física", "⚽", "#14B8A6"),
+            Subject("Música", "🎵", "#6366F1"),
+            Subject("Tecnología", "💻", "#06B6D4"),
+            Subject("Otra", "📚", "#6B7280")
         )
+
+        fun findByName(name: String): Subject? = DEFAULT_SUBJECTS.firstOrNull { it.name == name }
     }
 }

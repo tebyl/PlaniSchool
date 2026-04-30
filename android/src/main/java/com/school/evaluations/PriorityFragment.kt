@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 class PriorityFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var evaluations: MutableList<Evaluation>
 
     companion object {
         fun newInstance() = PriorityFragment()
@@ -27,43 +26,25 @@ class PriorityFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        evaluations = DataManager.getEvaluations(requireContext())
         recyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-
-        setupAdapter()
+        loadConfig()
     }
 
     fun refreshData() {
         if (!isAdded) return
-        evaluations = DataManager.getEvaluations(requireContext())
-        setupAdapter()
+        loadConfig()
     }
 
-    private fun setupAdapter() {
-        val sorted = evaluations.sortedWith(compareBy(
-            { it.isDone() },
-            { it.getDaysUntil() }
-        ))
-
+    private fun loadConfig() {
+        val studyConfig = DataManager.getStudyConfigWithDefaults(requireContext()).toMutableMap()
         recyclerView.adapter = PriorityAdapter(
-            sorted.toMutableList(),
-            onComplete = { eval ->
-                if (isAdded) {
-                    DataManager.updateEvaluation(requireContext(), eval.copy(completed = !eval.completed))
-                    refreshData()
-                }
-            },
-            onEdit = { eval ->
-                (activity as? MainActivity)?.showNewEvaluationSheet(eval)
-            },
-            onDelete = { eval ->
-                if (isAdded) {
-                    DataManager.deleteEvaluation(requireContext(), eval.id)
-                    refreshData()
-                }
-            }
-        )
+            Subject.DEFAULT_SUBJECTS,
+            studyConfig
+        ) { subjectName, days ->
+            studyConfig[subjectName] = days
+            DataManager.saveStudyConfig(requireContext(), studyConfig)
+            (activity as? MainActivity)?.refreshCalendar()
+        }
     }
 }

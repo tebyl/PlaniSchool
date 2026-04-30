@@ -4,13 +4,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import java.text.SimpleDateFormat
 import java.util.*
 
 class SubjectsAdapter(
-    private var subjects: List<Subject>,
     private var evaluations: List<Evaluation>,
     private val onComplete: (Evaluation) -> Unit,
     private val onEdit: (Evaluation) -> Unit,
@@ -18,57 +18,49 @@ class SubjectsAdapter(
 ) : RecyclerView.Adapter<SubjectsAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val subjectEmoji: TextView = view.findViewById(R.id.subjectEmoji)
-        val subjectName: TextView = view.findViewById(R.id.subjectName)
-        val evalCount: TextView = view.findViewById(R.id.evalCount)
-        val evalsContainer: LinearLayout = view.findViewById(R.id.evalsContainer)
+        val rootLayout: View = view.findViewById(R.id.rootLayout)
+        val btnCheck: ImageButton = view.findViewById(R.id.btnCheck)
+        val emojiText: TextView = view.findViewById(R.id.emojiText)
+        val subjectText: TextView = view.findViewById(R.id.subjectText)
+        val topicText: TextView = view.findViewById(R.id.topicText)
+        val dateText: TextView = view.findViewById(R.id.dateText)
+        val tvTodayBadge: TextView = view.findViewById(R.id.tvTodayBadge)
+        val btnEdit: ImageButton = view.findViewById(R.id.btnEdit)
+        val btnDelete: ImageButton = view.findViewById(R.id.btnDelete)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_subject, parent, false)
+            .inflate(R.layout.item_subject_dashboard, parent, false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val subject = subjects[position]
-        val subjectEvals = evaluations.filter { it.subject == subject.name }
-            .sortedBy { it.date }
+        val eval = evaluations[position]
+        val isDone = eval.isDone()
+        val isToday = eval.getDaysUntil() == 0
 
-        holder.subjectEmoji.text = subject.emoji
-        holder.subjectName.text = subject.name
-        holder.evalCount.text =
-            "${subjectEvals.size} evaluación${if (subjectEvals.size != 1) "es" else ""}"
+        holder.emojiText.text = eval.emoji
+        holder.subjectText.text = eval.subject
+        holder.topicText.text = eval.topic.ifEmpty { "Sin tema" }
+        holder.dateText.text = formatDisplayDate(eval.date)
 
-        holder.evalsContainer.removeAllViews()
+        holder.tvTodayBadge.visibility = if (isToday && !isDone) View.VISIBLE else View.GONE
+        holder.rootLayout.alpha = if (isDone) 0.55f else 1.0f
 
-        subjectEvals.forEach { eval ->
-            val evalView = LayoutInflater.from(holder.itemView.context)
-                .inflate(R.layout.item_subject_eval, holder.evalsContainer, false)
+        holder.btnCheck.imageTintList = ContextCompat.getColorStateList(
+            holder.itemView.context,
+            if (isDone) R.color.green_500 else R.color.gray_300
+        )
 
-            evalView.findViewById<TextView>(R.id.topicText).text =
-                eval.topic.ifEmpty { "Sin tema" }
-            evalView.findViewById<TextView>(R.id.dateText).text =
-                formatDisplayDate(eval.date)
-
-            evalView.findViewById<ImageButton>(R.id.btnCheck).setOnClickListener {
-                onComplete(eval)
-            }
-            evalView.findViewById<ImageButton>(R.id.btnEdit).setOnClickListener {
-                onEdit(eval)
-            }
-            evalView.findViewById<ImageButton>(R.id.btnDelete).setOnClickListener {
-                onDelete(eval)
-            }
-
-            holder.evalsContainer.addView(evalView)
-        }
+        holder.btnCheck.setOnClickListener { onComplete(eval) }
+        holder.btnEdit.setOnClickListener { onEdit(eval) }
+        holder.btnDelete.setOnClickListener { onDelete(eval) }
     }
 
-    override fun getItemCount() = subjects.size
+    override fun getItemCount() = evaluations.size
 
-    fun updateData(newSubjects: List<Subject>, newEvals: List<Evaluation>) {
-        subjects = newSubjects
+    fun updateData(newEvals: List<Evaluation>) {
         evaluations = newEvals
         notifyDataSetChanged()
     }
@@ -79,15 +71,10 @@ class SubjectsAdapter(
         return try {
             val cal = Calendar.getInstance()
             cal.set(parts[0].toInt(), parts[1].toInt() - 1, parts[2].toInt())
-            val dayNames = arrayOf("domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado")
-            val monthNames = arrayOf("enero", "febrero", "marzo", "abril", "mayo", "junio",
-                "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre")
-            val dayName = dayNames[cal.get(Calendar.DAY_OF_WEEK) - 1]
-            val dayNum = cal.get(Calendar.DAY_OF_MONTH)
-            val monthName = monthNames[cal.get(Calendar.MONTH)]
-            val year = cal.get(Calendar.YEAR)
-            "$dayName, $dayNum de $monthName de $year"
-        } catch (e: Exception) {
+            val formatter = SimpleDateFormat("EEEE, d 'de' MMMM 'de' yyyy", Locale("es", "CL"))
+            val value = formatter.format(cal.time)
+            value.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale("es", "CL")) else it.toString() }
+        } catch (_: Exception) {
             dateStr
         }
     }

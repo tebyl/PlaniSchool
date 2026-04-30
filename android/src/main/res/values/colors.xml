@@ -17,6 +17,17 @@
     <color name="bg_start">#EDE9FE</color>
     <color name="bg_end">#DBEAFE</color>
 
+    <!-- Stat card backgrounds -->
+    <color name="stat_bg_blue">#EFF6FF</color>
+    <color name="stat_bg_green">#F0FDF4</color>
+    <color name="stat_bg_red">#FEF2F2</color>
+    <color name="stat_bg_purple">#F5F3FF</color>
+    <!-- Stat card text/number colors -->
+    <color name="stat_text_blue">#1D4ED8</color>
+    <color name="stat_text_green">#15803D</color>
+    <color name="stat_text_red">#DC2626</color>
+    <color name="stat_text_purple">#6D28D9</color>
+
     <!-- Neutrals -->
     <color name="white">#FFFFFF</color>
     <color name="text_primary">#1F2937</color>

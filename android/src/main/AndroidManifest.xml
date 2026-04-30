@@ -3,6 +3,9 @@
     <application
         android:label="PlaniSchool"
         android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
+        <activity
+            android:name=".OnboardingActivity"
+            android:exported="false" />
         <activity android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

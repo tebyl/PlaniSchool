@@ -57,5 +57,14 @@ data class Evaluation(
         return evalDate
     }
 
+    fun getEffectiveStudyDays(studyConfig: Map<String, Int>): Int =
+        studyConfig[subject] ?: studyDaysBefore
+
+    fun getStudyStartDate(studyConfig: Map<String, Int>): Calendar {
+        val evalDate = parseDateOrNull() ?: Calendar.getInstance()
+        evalDate.add(Calendar.DAY_OF_YEAR, -getEffectiveStudyDays(studyConfig))
+        return evalDate
+    }
+
     fun isDone(): Boolean = completed || getDaysUntil() < 0
 }

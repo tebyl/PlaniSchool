@@ -12,8 +12,8 @@ import java.util.*
 class CalendarAdapter(
     private val context: Context,
     private val days: List<CalendarDay>,
-    private val evaluations: List<Evaluation>,
-    private val currentMonth: Calendar
+    private val currentMonth: Calendar,
+    private val dayUiMap: Map<String, CalendarDayUi>
 ) : BaseAdapter() {
 
     override fun getCount(): Int = days.size
@@ -25,13 +25,17 @@ class CalendarAdapter(
             .inflate(R.layout.item_calendar_day, parent, false)
 
         val dayText = view.findViewById<TextView>(R.id.dayText)
-        val dotView = view.findViewById<View>(R.id.dotView)
+        val dotEval = view.findViewById<View>(R.id.dotEval)
+        val dotStudy = view.findViewById<View>(R.id.dotStudy)
         val pillSubject = view.findViewById<TextView>(R.id.pillSubject)
+        val moreText = view.findViewById<TextView>(R.id.moreText)
 
         val day = days[position]
 
-        dotView.visibility = View.GONE
+        dotEval.visibility = View.GONE
+        dotStudy.visibility = View.GONE
         pillSubject.visibility = View.GONE
+        moreText.visibility = View.GONE
         dayText.setBackgroundResource(0)
 
         if (!day.isCurrentMonth || day.day == 0) {
@@ -58,26 +62,22 @@ class CalendarAdapter(
         val yearStr = currentMonth.get(Calendar.YEAR).toString()
         val dateStr = "$yearStr-$monthStr-$dayStr"
 
-        val dayEvaluations = evaluations.filter { it.date == dateStr }
-        val studyDayEvals = evaluations.filter { eval ->
-            val studyStart = eval.getStudyStartDate()
-            studyStart.get(Calendar.YEAR) == currentMonth.get(Calendar.YEAR) &&
-            studyStart.get(Calendar.MONTH) == currentMonth.get(Calendar.MONTH) &&
-            studyStart.get(Calendar.DAY_OF_MONTH) == day.day &&
-            eval.date != dateStr
+        val dayUi = dayUiMap[dateStr]
+        val dayEvaluations = dayUi?.evaluations ?: emptyList()
+        val dayStudyItems = dayUi?.studyItems ?: emptyList()
+
+        if (dayEvaluations.isNotEmpty()) {
+            dotEval.visibility = View.VISIBLE
+            pillSubject.text = dayEvaluations.first().subject
+            pillSubject.visibility = View.VISIBLE
+            if (dayEvaluations.size > 1) {
+                moreText.text = "+${dayEvaluations.size - 1} más"
+                moreText.visibility = View.VISIBLE
+            }
         }
 
-        when {
-            dayEvaluations.isNotEmpty() -> {
-                pillSubject.text = dayEvaluations.first().subject
-                pillSubject.visibility = View.VISIBLE
-                dotView.setBackgroundResource(R.drawable.bg_dot)
-                dotView.visibility = View.VISIBLE
-            }
-            studyDayEvals.isNotEmpty() -> {
-                dotView.setBackgroundResource(R.drawable.bg_dot_study)
-                dotView.visibility = View.VISIBLE
-            }
+        if (dayStudyItems.isNotEmpty()) {
+            dotStudy.visibility = View.VISIBLE
         }
 
         return view

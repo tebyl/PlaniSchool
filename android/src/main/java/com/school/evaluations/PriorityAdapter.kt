@@ -1,100 +1,61 @@
 package com.school.evaluations
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageButton
+import android.widget.SeekBar
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import java.util.*
 
 class PriorityAdapter(
-    private var evaluations: MutableList<Evaluation>,
-    private val onComplete: (Evaluation) -> Unit,
-    private val onEdit: (Evaluation) -> Unit,
-    private val onDelete: (Evaluation) -> Unit
+    private val subjects: List<Subject>,
+    private val studyConfig: MutableMap<String, Int>,
+    private val onConfigChanged: (String, Int) -> Unit
 ) : RecyclerView.Adapter<PriorityAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val emojiText: TextView = view.findViewById(R.id.emojiText)
-        val subjectText: TextView = view.findViewById(R.id.subjectText)
-        val topicText: TextView = view.findViewById(R.id.topicText)
-        val btnCheck: ImageButton = view.findViewById(R.id.btnCheck)
-        val tvCompleted: TextView = view.findViewById(R.id.tvCompleted)
-        val studyInfoText: TextView = view.findViewById(R.id.studyInfoText)
-        val dateText: TextView = view.findViewById(R.id.dateText)
-        val btnEdit: Button = view.findViewById(R.id.btnEdit)
-        val btnDelete: ImageButton = view.findViewById(R.id.btnDelete)
+        val subjectEmoji: TextView = view.findViewById(R.id.subjectEmoji)
+        val subjectName: TextView = view.findViewById(R.id.subjectName)
+        val tvDaysBadge: TextView = view.findViewById(R.id.tvDaysBadge)
+        val seekBarDays: SeekBar = view.findViewById(R.id.seekBarDays)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_priority, parent, false)
+            .inflate(R.layout.item_priority_slider, parent, false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val eval = evaluations[position]
-        holder.emojiText.text = eval.emoji
-        holder.subjectText.text = eval.subject
-        holder.topicText.text = eval.topic.ifEmpty { "Sin tema" }
-        holder.dateText.text = formatDisplayDate(eval.date)
+        val subject = subjects[position]
+        val days = (studyConfig[subject.name] ?: 5).coerceIn(1, 10)
 
-        val isDone = eval.isDone()
+        holder.subjectEmoji.text = subject.emoji
+        holder.subjectName.text = subject.name
+        holder.tvDaysBadge.text = days.toString()
+        val color = Color.parseColor(subject.color)
+        holder.tvDaysBadge.backgroundTintList = ColorStateList.valueOf(color)
+        holder.seekBarDays.thumbTintList = ColorStateList.valueOf(color)
+        holder.seekBarDays.progressTintList = ColorStateList.valueOf(color)
 
-        if (isDone) {
-            holder.tvCompleted.visibility = View.VISIBLE
-            holder.studyInfoText.visibility = View.GONE
-            holder.btnCheck.setImageResource(R.drawable.ic_check)
-            holder.btnCheck.imageTintList = ContextCompat.getColorStateList(
-                holder.itemView.context, R.color.green_500
-            )
-        } else {
-            holder.tvCompleted.visibility = View.GONE
-            holder.studyInfoText.visibility = View.VISIBLE
-            holder.btnCheck.imageTintList = ContextCompat.getColorStateList(
-                holder.itemView.context, R.color.gray_300
-            )
+        holder.seekBarDays.setOnSeekBarChangeListener(null)
+        holder.seekBarDays.progress = days
 
-            val days = eval.getDaysUntil()
-            val studyStart = eval.getStudyStartDate()
-            holder.studyInfoText.text = when {
-                days == 0 -> "🎯 ¡Hoy es el día de la evaluación!"
-                studyStart.before(Calendar.getInstance()) -> "📚 ¡Es hora de estudiar! Quedan ${days}d"
-                else -> "💡 Empieza a estudiar el ${studyStart.get(Calendar.DAY_OF_MONTH)}/${studyStart.get(Calendar.MONTH) + 1}"
+        holder.seekBarDays.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                val d = maxOf(1, progress)
+                holder.tvDaysBadge.text = d.toString()
+                if (fromUser) {
+                    studyConfig[subject.name] = d
+                    onConfigChanged(subject.name, d)
+                }
             }
-        }
-
-        holder.btnCheck.setOnClickListener { onComplete(eval) }
-        holder.btnEdit.setOnClickListener { onEdit(eval) }
-        holder.btnDelete.setOnClickListener { onDelete(eval) }
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+        })
     }
 
-    override fun getItemCount() = evaluations.size
-
-    fun updateData(newEvals: List<Evaluation>) {
-        evaluations = newEvals.toMutableList()
-        notifyDataSetChanged()
-    }
-
-    private fun formatDisplayDate(dateStr: String): String {
-        val parts = dateStr.split("-")
-        if (parts.size != 3) return dateStr
-        return try {
-            val cal = Calendar.getInstance()
-            cal.set(parts[0].toInt(), parts[1].toInt() - 1, parts[2].toInt())
-            val dayNames = arrayOf("domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado")
-            val monthNames = arrayOf("enero", "febrero", "marzo", "abril", "mayo", "junio",
-                "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre")
-            val dayName = dayNames[cal.get(Calendar.DAY_OF_WEEK) - 1]
-            val dayNum = cal.get(Calendar.DAY_OF_MONTH)
-            val monthName = monthNames[cal.get(Calendar.MONTH)]
-            val year = cal.get(Calendar.YEAR)
-            "$dayName, $dayNum de $monthName de $year"
-        } catch (e: Exception) {
-            dateStr
-        }
-    }
+    override fun getItemCount() = subjects.size
 }

@@ -1,42 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="12dp">
+    android:padding="@dimen/spacing_sm">
 
-    <!-- Priority banner -->
-    <LinearLayout
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_priority_banner"
-        android:orientation="vertical"
-        android:padding="16dp"
-        android:layout_marginBottom="12dp">
+        android:layout_margin="4dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="3dp">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="🔥 ¡Prioridades de Estudio!"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_md">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Aquí ves cuándo empezar a estudiar para cada evaluación"
-            android:textColor="#CCFFFFFF"
-            android:textSize="13sp"
-            android:layout_marginTop="4dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="2"
+                android:text="⭐ Configuración de Prioridades"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
-    </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:text="¿Cuántos días necesitas para estudiar cada materia?"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp" />
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:clipToPadding="false" />
+        android:clipToPadding="false"
+        android:padding="4dp" />
 
 </LinearLayout>

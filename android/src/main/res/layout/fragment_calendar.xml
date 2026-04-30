@@ -6,15 +6,14 @@
     android:orientation="vertical"
     android:padding="12dp">
 
-    <!-- Calendar Card -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_marginBottom="8dp"
+        app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="20dp"
-        app:cardElevation="4dp"
-        app:cardBackgroundColor="@color/white">
+        app:cardElevation="4dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,7 +21,6 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Month Navigation -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="48dp">
@@ -31,12 +29,12 @@
                     android:id="@+id/btnPrevMonth"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:layout_centerVertical="true"
                     android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
                     android:background="@drawable/bg_nav_arrow"
+                    android:contentDescription="Mes anterior"
                     android:src="@drawable/ic_prev"
-                    android:tint="@color/white"
-                    android:contentDescription="Mes anterior" />
+                    android:tint="@color/white" />
 
                 <TextView
                     android:id="@+id/monthText"
@@ -52,21 +50,19 @@
                     android:id="@+id/btnNextMonth"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:layout_centerVertical="true"
                     android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
                     android:background="@drawable/bg_nav_arrow"
+                    android:contentDescription="Mes siguiente"
                     android:src="@drawable/ic_next"
-                    android:tint="@color/white"
-                    android:contentDescription="Mes siguiente" />
-
+                    android:tint="@color/white" />
             </RelativeLayout>
 
-            <!-- Day headers -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="32dp"
-                android:orientation="horizontal"
-                android:layout_marginTop="8dp">
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
 
                 <TextView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:text="Dom" android:textColor="@color/text_secondary" android:textSize="12sp" />
                 <TextView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:text="Lun" android:textColor="@color/text_secondary" android:textSize="12sp" />
@@ -75,60 +71,54 @@
                 <TextView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:text="Jue" android:textColor="@color/text_secondary" android:textSize="12sp" />
                 <TextView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:text="Vie" android:textColor="@color/text_secondary" android:textSize="12sp" />
                 <TextView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:text="Sáb" android:textColor="@color/text_secondary" android:textSize="12sp" />
-
             </LinearLayout>
 
-            <!-- Calendar Grid -->
             <GridView
                 android:id="@+id/calendarGrid"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:numColumns="7"
-                android:verticalSpacing="2dp"
-                android:horizontalSpacing="2dp"
                 android:layout_marginTop="4dp"
-                android:stretchMode="columnWidth" />
-
+                android:horizontalSpacing="2dp"
+                android:numColumns="7"
+                android:stretchMode="columnWidth"
+                android:verticalSpacing="2dp" />
         </LinearLayout>
-
     </androidx.cardview.widget.CardView>
 
-    <!-- Legend -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:gravity="center"
+        android:orientation="horizontal"
         android:padding="8dp">
 
         <View
             android:layout_width="10dp"
             android:layout_height="10dp"
-            android:background="@drawable/bg_dot"
-            android:layout_marginEnd="4dp" />
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/bg_dot" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
             android:text="Día de evaluación"
-            android:textSize="12sp"
             android:textColor="@color/text_secondary"
-            android:layout_marginEnd="16dp" />
+            android:textSize="12sp" />
 
         <View
             android:layout_width="10dp"
             android:layout_height="10dp"
-            android:background="@drawable/bg_dot_study"
-            android:layout_marginEnd="4dp" />
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/bg_dot_study" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Días de estudio"
-            android:textSize="12sp"
-            android:textColor="@color/text_secondary" />
-
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
     </LinearLayout>
 
 </LinearLayout>
