@@ -1,5 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Header gradient -->
+    <color name="grad_purple">#7C3AED</color>
+    <color name="grad_pink">#EC4899</color>
+    <color name="grad_orange">#F97316</color>
+
+    <!-- Tab active gradients -->
+    <color name="tab_calendar_start">#7C3AED</color>
+    <color name="tab_calendar_end">#EC4899</color>
+    <color name="tab_priority_start">#F97316</color>
+    <color name="tab_priority_end">#EF4444</color>
+    <color name="tab_subjects_start">#3B82F6</color>
+    <color name="tab_subjects_end">#06B6D4</color>
+
+    <!-- App background -->
+    <color name="bg_start">#EDE9FE</color>
+    <color name="bg_end">#DBEAFE</color>
+
+    <!-- Neutrals -->
+    <color name="white">#FFFFFF</color>
+    <color name="text_primary">#1F2937</color>
+    <color name="text_secondary">#6B7280</color>
+    <color name="dot_evaluation">#7C3AED</color>
+    <color name="dot_study">#F9A8D4</color>
+
+    <!-- Legacy (kept for compatibility) -->
     <color name="purple_500">#A855F7</color>
     <color name="purple_600">#9333EA</color>
     <color name="pink_500">#EC4899</color>
@@ -17,5 +42,4 @@
     <color name="gray_600">#4B5563</color>
     <color name="gray_700">#374151</color>
     <color name="gray_800">#1F2937</color>
-    <color name="white">#FFFFFF</color>
 </resources>

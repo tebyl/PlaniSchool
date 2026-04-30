@@ -2,10 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
+    android:layout_marginBottom="4dp"
     android:orientation="horizontal"
     android:background="@drawable/bg_subject_eval_item"
-    android:padding="12dp">
+    android:gravity="center_vertical"
+    android:padding="10dp">
 
     <LinearLayout
         android:layout_width="0dp"
@@ -18,26 +19,48 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Tema de la evaluación"
-            android:textColor="@color/gray_800"
-            android:textSize="14sp" />
+            android:textColor="@color/text_primary"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/dateText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="15/01/2024"
-            android:textColor="@color/gray_500"
+            android:text="miércoles, 29 de abril de 2026"
+            android:textColor="@color/text_secondary"
             android:textSize="12sp" />
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/daysText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="5d"
-        android:textColor="@color/green_500"
-        android:textSize="14sp"
-        android:textStyle="bold" />
+    <!-- Action buttons -->
+    <ImageButton
+        android:id="@+id/btnCheck"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_check"
+        android:tint="@color/green_500"
+        android:contentDescription="Completar" />
+
+    <ImageButton
+        android:id="@+id/btnEdit"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_edit"
+        android:tint="@color/grad_orange"
+        android:layout_marginStart="4dp"
+        android:contentDescription="Editar" />
+
+    <ImageButton
+        android:id="@+id/btnDelete"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_delete"
+        android:tint="@color/red_500"
+        android:layout_marginStart="4dp"
+        android:contentDescription="Eliminar" />
 
 </LinearLayout>

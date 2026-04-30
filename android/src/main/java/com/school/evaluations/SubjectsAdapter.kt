@@ -3,20 +3,25 @@ package com.school.evaluations
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import java.util.*
 
 class SubjectsAdapter(
-    private val subjects: List<Subject>,
-    private val evaluations: List<Evaluation>
+    private var subjects: List<Subject>,
+    private var evaluations: List<Evaluation>,
+    private val onComplete: (Evaluation) -> Unit,
+    private val onEdit: (Evaluation) -> Unit,
+    private val onDelete: (Evaluation) -> Unit
 ) : RecyclerView.Adapter<SubjectsAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val subjectHeader: View = view.findViewById(R.id.subjectHeader)
         val subjectEmoji: TextView = view.findViewById(R.id.subjectEmoji)
         val subjectName: TextView = view.findViewById(R.id.subjectName)
         val evalCount: TextView = view.findViewById(R.id.evalCount)
-        val evalsContainer: ViewGroup = view.findViewById(R.id.evalsContainer)
+        val evalsContainer: LinearLayout = view.findViewById(R.id.evalsContainer)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -41,17 +46,19 @@ class SubjectsAdapter(
             val evalView = LayoutInflater.from(holder.itemView.context)
                 .inflate(R.layout.item_subject_eval, holder.evalsContainer, false)
 
-            val topicText = evalView.findViewById<TextView>(R.id.topicText)
-            val dateText = evalView.findViewById<TextView>(R.id.dateText)
-            val daysText = evalView.findViewById<TextView>(R.id.daysText)
+            evalView.findViewById<TextView>(R.id.topicText).text =
+                eval.topic.ifEmpty { "Sin tema" }
+            evalView.findViewById<TextView>(R.id.dateText).text =
+                formatDisplayDate(eval.date)
 
-            topicText.text = eval.topic.ifEmpty { "Sin tema" }
-            dateText.text = eval.date
-
-            val days = eval.getDaysUntil()
-            daysText.text = when {
-                days < 0 -> "✓"
-                else -> "${days}d"
+            evalView.findViewById<ImageButton>(R.id.btnCheck).setOnClickListener {
+                onComplete(eval)
+            }
+            evalView.findViewById<ImageButton>(R.id.btnEdit).setOnClickListener {
+                onEdit(eval)
+            }
+            evalView.findViewById<ImageButton>(R.id.btnDelete).setOnClickListener {
+                onDelete(eval)
             }
 
             holder.evalsContainer.addView(evalView)
@@ -59,4 +66,29 @@ class SubjectsAdapter(
     }
 
     override fun getItemCount() = subjects.size
+
+    fun updateData(newSubjects: List<Subject>, newEvals: List<Evaluation>) {
+        subjects = newSubjects
+        evaluations = newEvals
+        notifyDataSetChanged()
+    }
+
+    private fun formatDisplayDate(dateStr: String): String {
+        val parts = dateStr.split("-")
+        if (parts.size != 3) return dateStr
+        return try {
+            val cal = Calendar.getInstance()
+            cal.set(parts[0].toInt(), parts[1].toInt() - 1, parts[2].toInt())
+            val dayNames = arrayOf("domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado")
+            val monthNames = arrayOf("enero", "febrero", "marzo", "abril", "mayo", "junio",
+                "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre")
+            val dayName = dayNames[cal.get(Calendar.DAY_OF_WEEK) - 1]
+            val dayNum = cal.get(Calendar.DAY_OF_MONTH)
+            val monthName = monthNames[cal.get(Calendar.MONTH)]
+            val year = cal.get(Calendar.YEAR)
+            "$dayName, $dayNum de $monthName de $year"
+        } catch (e: Exception) {
+            dateStr
+        }
+    }
 }

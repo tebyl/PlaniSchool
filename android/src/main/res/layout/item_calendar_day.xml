@@ -1,26 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
-    android:padding="4dp">
+    android:layout_height="56dp"
+    android:padding="2dp">
 
     <TextView
         android:id="@+id/dayText"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="4dp"
         android:gravity="center"
-        android:text="1"
-        android:textColor="@color/gray_700"
-        android:textSize="16sp"
-        android:background="@drawable/bg_calendar_day" />
+        android:textSize="13sp"
+        android:textColor="@color/text_primary" />
 
     <View
-        android:id="@+id/evalIndicator"
-        android:layout_width="8dp"
-        android:layout_height="8dp"
-        android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="4dp"
-        android:background="@drawable/bg_eval_indicator"
+        android:id="@+id/dotView"
+        android:layout_width="6dp"
+        android:layout_height="6dp"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/pillSubject"
+        android:background="@drawable/bg_dot"
         android:visibility="gone" />
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/pillSubject"
+        android:layout_width="match_parent"
+        android:layout_height="14dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="1dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginEnd="1dp"
+        android:background="@drawable/bg_pill_subject"
+        android:textColor="@color/white"
+        android:textSize="7sp"
+        android:gravity="center"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:visibility="gone" />
+
+</RelativeLayout>

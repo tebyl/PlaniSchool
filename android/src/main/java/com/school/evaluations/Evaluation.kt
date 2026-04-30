@@ -9,7 +9,8 @@ data class Evaluation(
     val date: String, // YYYY-MM-DD format
     val studyDaysBefore: Int,
     val color: String,
-    val emoji: String
+    val emoji: String,
+    val completed: Boolean = false
 ) {
     private fun parseDateOrNull(): Calendar? {
         val parts = date.split("-")
@@ -55,4 +56,6 @@ data class Evaluation(
         evalDate.add(Calendar.DAY_OF_YEAR, -studyDaysBefore)
         return evalDate
     }
+
+    fun isDone(): Boolean = completed || getDaysUntil() < 0
 }

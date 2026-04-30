@@ -3,9 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
+    android:layout_marginBottom="8dp"
     app:cardCornerRadius="16dp"
-    app:cardElevation="4dp">
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,6 +14,7 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- Top row: emoji + subject/topic + check -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,7 +41,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Matemáticas"
-                    android:textColor="@color/gray_800"
+                    android:textColor="@color/text_primary"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -48,39 +50,86 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Ecuaciones"
-                    android:textColor="@color/gray_500"
-                    android:textSize="14sp" />
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp" />
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/daysText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="5d"
-                android:textColor="@color/green_500"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+            <ImageButton
+                android:id="@+id/btnCheck"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_check"
+                android:tint="@color/gray_300"
+                android:contentDescription="Marcar completada" />
 
         </LinearLayout>
 
+        <!-- Completed badge (visible only when done) -->
         <TextView
-            android:id="@+id/dateText"
-            android:layout_width="wrap_content"
+            android:id="@+id/tvCompleted"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="15 de enero, 2024"
-            android:textColor="@color/gray_500"
-            android:textSize="13sp" />
+            android:background="@drawable/bg_completed_badge"
+            android:padding="8dp"
+            android:text="✅ Evaluación completada"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp"
+            android:gravity="center"
+            android:visibility="gone" />
 
+        <!-- Study info (visible when not completed) -->
         <TextView
             android:id="@+id/studyInfoText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="6dp"
             android:text="Empezar estudio: 10/1"
-            android:textColor="@color/gray_600"
+            android:textColor="@color/text_secondary"
             android:textSize="13sp" />
+
+        <!-- Date -->
+        <TextView
+            android:id="@+id/dateText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="miércoles, 29 de abril de 2026"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
+        <!-- Action buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:weightSum="2">
+
+            <Button
+                android:id="@+id/btnEdit"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/bg_edit_button"
+                android:text="✏️ Editar"
+                android:textColor="@color/grad_purple"
+                android:textSize="13sp"
+                android:stateListAnimator="@null" />
+
+            <ImageButton
+                android:id="@+id/btnDelete"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_delete_button"
+                android:src="@drawable/ic_delete"
+                android:tint="@color/red_500"
+                android:contentDescription="Eliminar" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
