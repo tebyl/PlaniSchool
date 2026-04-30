@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
     <LinearLayout
@@ -21,11 +21,17 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -68,8 +74,9 @@
                 android:background="@drawable/bg_input_outlined"
                 android:gravity="top|start"
                 android:hint="Escribe el tema..."
-                android:inputType="textMultiLine|textCapSentences"
-                android:maxLines="5"
+                android:imeOptions="actionDone"
+                android:inputType="textCapSentences|textMultiLine"
+                android:maxLines="3"
                 android:minLines="3"
                 android:padding="12dp"
                 android:textColor="@color/text_primary"
@@ -97,15 +104,16 @@
                 android:text="30 / 04 / 2026"
                 android:textColor="@color/text_primary"
                 android:textSize="14sp" />
-    </LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
+        android:background="@android:color/white"
         android:elevation="8dp"
-        android:background="@android:color/white">
+        android:orientation="horizontal"
+        android:padding="16dp">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnCancel"
@@ -114,12 +122,12 @@
             android:layout_weight="1"
             android:minWidth="0dp"
             android:text="Cancelar"
-            android:textColor="#6B7280"
             android:textAllCaps="false"
+            android:textColor="#6B7280"
             app:backgroundTint="@android:color/transparent"
+            app:cornerRadius="16dp"
             app:strokeColor="@color/gray_300"
-            app:strokeWidth="1dp"
-            app:cornerRadius="16dp" />
+            app:strokeWidth="1dp" />
 
         <Space
             android:layout_width="12dp"
@@ -132,8 +140,8 @@
             android:layout_weight="1"
             android:minWidth="0dp"
             android:text="Agregar"
-            android:textColor="@android:color/white"
             android:textAllCaps="false"
+            android:textColor="@android:color/white"
             android:textStyle="bold"
             app:backgroundTint="@color/green_500"
             app:cornerRadius="16dp" />

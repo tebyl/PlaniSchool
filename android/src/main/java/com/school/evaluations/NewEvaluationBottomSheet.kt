@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
@@ -40,8 +41,9 @@ class NewEvaluationBottomSheet : BottomSheetDialogFragment() {
             val behavior = BottomSheetBehavior.from(it)
             behavior.state = BottomSheetBehavior.STATE_EXPANDED
             behavior.skipCollapsed = true
-            it.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            it.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
         }
+        d.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
