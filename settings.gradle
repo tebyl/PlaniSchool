@@ -1,0 +1,3 @@
+rootProject.name = 'PlaniSchool'
+include ':app'
+project(':app').projectDir = new File('android')
